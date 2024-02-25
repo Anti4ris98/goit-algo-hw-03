@@ -5,23 +5,22 @@ from pathlib import Path
 
 
 def parse_argv():
-    parser = argparse.ArgumentParser("Сортування картинок")
+    parser = argparse.ArgumentParser(description="Сортування файлів за типом")
     parser.add_argument(
         "-S", 
         "--source", 
         type=Path, 
         required=True, 
-        help="Папка з картинками"
+        help="Шлях до вихідної директорії"
     )
     parser.add_argument(
         "-O",
         "--output",
         type=Path,
-        default=Path("output"),
-        help="Папка з відсортованими картинками",
+        default=Path("dist"),
+        help="Шлях до директорії призначення",
     )
     return parser.parse_args()
-
 
 def recursive_copy(src: Path, dst: Path):
     try:
@@ -29,7 +28,8 @@ def recursive_copy(src: Path, dst: Path):
             if item.is_dir():
                 recursive_copy(item, dst)
             else:
-                folder = dst / item.name[:1]  # output/f
+                file_extension = item.suffix
+                folder = dst / file_extension[1:]  # Remove the dot from the extension
                 folder.mkdir(exist_ok=True, parents=True)
                 shutil.copy2(item, folder)
     except PermissionError as e:
@@ -47,11 +47,20 @@ def main():
     except Exception as e:
         print(f"Помилка при виконанні програми: {e}")
 
-
 if __name__ == "__main__":
     main()
 
 
+
+
+
+# def koch_curve(t, order, size):
+#     if order == 0:
+#         t.forward(size)
+#     else: 
+#         for angle in [60, -120, 60, 0]:
+#             koch_curve(t, order - 1, size / 3)
+#             t.left(angle)
 
 
 # def draw_koch_snowflake(order, size=300):
@@ -70,4 +79,5 @@ if __name__ == "__main__":
 
 #     window.mainloop()
 
-# draw_koch_snowflake(4)
+# input = int(input("Введіть рівень рекурсії >>>"))
+# draw_koch_snowflake(input)
